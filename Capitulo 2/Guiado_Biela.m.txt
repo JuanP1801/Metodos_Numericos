@@ -1,0 +1,188 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% this code solves the system of equations of dyad ae and cf for the motion
+% generation problem
+%
+% xf:     vector with the solution of the problem
+% fx:     nonlinear system of equations.
+% J:      Jacobian matrix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clear all
+clc
+close all
+%Here we solve the first set of 6 equations for diad "ae"
+o2=[601,151];
+o4=[2571,441];
+p1=[0,0];
+p2=[-116,690];
+p3=[-139,1407];
+delta2=deg2rad(-15);
+delta3=deg2rad(-30);
+
+r1=p1-o2;
+r2=p2-o2;
+r3=p3-o2;
+%initial kinematic conditions
+counter=0;
+xi=[1300 800 deg2rad(10) deg2rad(20) deg2rad(30) deg2rad(200)]';
+res=10;
+
+while res>0.00000000001 && counter<100
+    counter=counter+1;
+    fx = [xi(1)*cos(xi(3)) + xi(2)*cos(xi(6)) - r1(1);
+          xi(1)*sin(xi(3)) + xi(2)*sin(xi(6)) - r1(2);
+          xi(1)*cos(xi(4)) + xi(2)*cos(xi(6)+ delta2) - r2(1);
+          xi(1)*sin(xi(4)) + xi(2)*sin(xi(6)+ delta2) - r2(2);
+          xi(1)*cos(xi(5)) + xi(2)*cos(xi(6)+ delta3) - r3(1);
+          xi(1)*sin(xi(5)) + xi(2)*sin(xi(6)+ delta3) - r3(2);];
+
+    J = [cos(xi(3)),  cos(xi(6)),       -xi(1)*sin(xi(3)),  0,                 0,               -xi(2)*sin(xi(6));
+         sin(xi(3)),  sin(xi(6)),        xi(1)*cos(xi(3)),  0,                 0,                xi(2)*cos(xi(6));
+         cos(xi(4)),  cos(xi(6)+delta2), 0,                -xi(1)*sin(xi(4)),  0,               -xi(2)*sin(xi(6)+delta2);
+         sin(xi(4)),  sin(xi(6)+delta2), 0,                 xi(1)*cos(xi(4)),  0,                xi(2)*cos(xi(6)+delta2);
+         cos(xi(5)),  cos(xi(6)+delta3), 0,                 0,                -xi(1)*sin(xi(5)),-xi(2)*sin(xi(6)+delta3);
+         sin(xi(5)),  sin(xi(6)+delta3), 0,                 0,                 xi(1)*cos(xi(5)), xi(2)*cos(xi(6)+delta3);];
+
+    xf = xi - J\fx;
+    xi = xf;
+    res = norm(fx);
+end
+if counter==100
+    disp('sin convergencia en diada ae')
+    return
+end
+
+xi_deg=xi;
+xi_deg(3:6,1)=rad2deg(xi(3:6,1));
+
+%take rotation angle to the range of 0:360
+for i=3:1:6
+    module=xi_deg(i)/360;
+    if module>1
+        module=floor(module);
+        xi_deg(i)=xi_deg(i)-(module*360);
+    elseif module<-1
+        module=ceil(module);
+        xi_deg(i)=xi_deg(i)-(module*360);
+    end
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Here we solve the first set of 6 equations for diad "cf"
+s1=p1-o4;
+s2=p2-o4;
+s3=p3-o4;
+%initial kinematic conditions
+counter=0;
+xj=[500 3000 deg2rad(100) deg2rad(90) deg2rad(80) deg2rad(200)]';
+res=10;
+
+while res>0.00000000001 && counter<100
+    counter=counter+1;
+    fx = [xj(1)*cos(xj(3)) + xj(2)*cos(xj(6)) - s1(1);
+          xj(1)*sin(xj(3)) + xj(2)*sin(xj(6)) - s1(2);
+          xj(1)*cos(xj(4)) + xj(2)*cos(xj(6)+ delta2) - s2(1);
+          xj(1)*sin(xj(4)) + xj(2)*sin(xj(6)+ delta2) - s2(2);
+          xj(1)*cos(xj(5)) + xj(2)*cos(xj(6)+ delta3) - s3(1);
+          xj(1)*sin(xj(5)) + xj(2)*sin(xj(6)+ delta3) - s3(2);];
+
+    J = [cos(xj(3)),  cos(xj(6)),       -xj(1)*sin(xj(3)),  0,                 0,               -xj(2)*sin(xj(6));
+         sin(xj(3)),  sin(xj(6)),        xj(1)*cos(xj(3)),  0,                 0,                xj(2)*cos(xj(6));
+         cos(xj(4)),  cos(xj(6)+delta2), 0,                -xj(1)*sin(xj(4)),  0,               -xj(2)*sin(xj(6)+delta2);
+         sin(xj(4)),  sin(xj(6)+delta2), 0,                 xj(1)*cos(xj(4)),  0,                xj(2)*cos(xj(6)+delta2);
+         cos(xj(5)),  cos(xj(6)+delta3), 0,                 0,                -xj(1)*sin(xj(5)),-xj(2)*sin(xj(6)+delta3);
+         sin(xj(5)),  sin(xj(6)+delta3), 0,                 0,                 xj(1)*cos(xj(5)), xj(2)*cos(xj(6)+delta3);];
+
+    xf = xj - J\fx;
+    xj = xf;
+    res = norm(fx);
+end
+if counter==100
+    disp('sin convergencia en diada cf')
+    return
+end
+
+xj_deg=xj;
+xj_deg(3:6,1)=rad2deg(xj(3:6,1));
+
+%take rotation angle to the range of 0:360
+for i=3:1:6
+    module=xj_deg(i)/360;
+    if module>1
+        module=floor(module);
+        xj_deg(i)=xj_deg(i)-(module*360);
+    elseif module<-1
+        module=ceil(module);
+        xj_deg(i)=xj_deg(i)-(module*360);
+    end
+end
+
+%plot the solution
+a=xi(1);
+c=xj(1);
+d=norm(o4-o2);
+e=xi(2);
+f=xj(2);
+alpha=xi(6);
+beta=xj(6);
+figure
+%position 1
+phi=xi(3);
+psi=xj(3);
+A=[(o2(1)+a*cos(phi));(o2(2)+a*sin(phi))];
+B=[(o4(1)+c*cos(psi));(o4(2)+c*sin(psi))];
+b=norm(B-A);
+Poi=[A(1)+e*cos(alpha);A(2)+e*sin(alpha)];
+line(([o2(1) A(1)]),([o2(2) A(2)]),'color','red')
+hold on
+line(([o4(1) B(1)]),([o4(2) B(2)]),'color','red')
+line(([A(1) B(1)]),([A(2) B(2)]),'color','red')
+line(([A(1) Poi(1)]),([A(2) Poi(2)]),'color','red')
+line(([B(1) Poi(1)]),([B(2) Poi(2)]),'color','red')
+plot(o2(1),o2(2),'ok')
+plot(o4(1),o4(2),'ok')
+plot(A(1),A(2),'*r')
+plot(B(1),B(2),'*g')
+plot(Poi(1),Poi(2),'*b')
+%position 2
+phi=xi(4);
+psi=xj(4);
+A=[(o2(1)+a*cos(phi));(o2(2)+a*sin(phi))];
+B=[(o4(1)+c*cos(psi));(o4(2)+c*sin(psi))];
+Poi=[A(1)+e*cos(alpha+delta2);A(2)+e*sin(alpha+delta2)];
+line(([o2(1) A(1)]),([o2(2) A(2)]),'color','green')
+line(([o4(1) B(1)]),([o4(2) B(2)]),'color','green')
+line(([A(1) B(1)]),([A(2) B(2)]),'color','green')
+line(([A(1) Poi(1)]),([A(2) Poi(2)]),'color','green')
+line(([B(1) Poi(1)]),([B(2) Poi(2)]),'color','green')
+plot(o2(1),o2(2),'ok')
+plot(o4(1),o4(2),'ok')
+plot(A(1),A(2),'*r')
+plot(B(1),B(2),'*g')
+plot(Poi(1),Poi(2),'*b')
+%positon 3
+phi=xi(5);
+psi=xj(5);
+A=[(o2(1)+a*cos(phi));(o2(2)+a*sin(phi))];
+B=[(o4(1)+c*cos(psi));(o4(2)+c*sin(psi))];
+Poi=[A(1)+e*cos(alpha+delta3);A(2)+e*sin(alpha+delta3)];
+line(([o2(1) A(1)]),([o2(2) A(2)]),'color','blue')
+line(([o4(1) B(1)]),([o4(2) B(2)]),'color','blue')
+line(([A(1) B(1)]),([A(2) B(2)]),'color','blue')
+line(([A(1) Poi(1)]),([A(2) Poi(2)]),'color','blue')
+line(([B(1) Poi(1)]),([B(2) Poi(2)]),'color','blue')
+plot(o2(1),o2(2),'ok')
+plot(o4(1),o4(2),'ok')
+plot(A(1),A(2),'*r')
+plot(B(1),B(2),'*g')
+plot(Poi(1),Poi(2),'*b')
+
+axis equal
+%print results
+bar_lengths=[a; b; c; d; e; f];
+results=table(bar_lengths);
+results.Properties.RowNames ={'a';'b';'c';'d';'e';'f'};
+results
