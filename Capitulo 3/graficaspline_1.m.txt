@@ -1,0 +1,42 @@
+
+
+xpol0=1:0.001:1.000002926 ;
+xpol1=1.000002926 :0.001:1.329;
+xpol2=1.329:0.001:1.3330;
+xpol3=1.3330:0.001:1.35;
+xpol4=1.35:0.001:1.423;
+xpol5=1.423:0.001:1.473;
+xpol6=1.473:0.001:1.544;
+xpol7=1.544:0.001:1.5295;
+xpol8=1.5295:0.001:2.42;
+
+
+ p0=Tabla(1,1)*xpol0+Tabla(1,2);
+ p1=Tabla(2,1)*xpol1+Tabla(2,2);
+ p2=Tabla(3,1)*xpol2+Tabla(3,2);
+ p3=Tabla(4,1)*xpol3+Tabla(4,2);
+ p4=Tabla(5,1)*xpol4+Tabla(5,2);
+ p5=Tabla(6,1)*xpol5+Tabla(6,2);
+ p6=Tabla(7,1)*xpol6+Tabla(7,2);
+ p7=Tabla(8,1)*xpol7+Tabla(8,2);
+ p8=Tabla(8,1)*xpol8+Tabla(8,2);
+
+
+ %p0=Tabla(1,1)*xpol0.^3+Tabla(1,2)*xpol0.^2+Tabla(1,3)*xpol0+Tabla(1,4);
+ %p1=Tabla(2,1)*xpol1.^3+Tabla(2,2)*xpol1.^2+Tabla(2,3)*xpol1+Tabla(2,4);
+ %p2=Tabla(3,1)*xpol2.^3+Tabla(3,2)*xpol2.^2+Tabla(3,3)*xpol2+Tabla(3,4);
+ %p3=Tabla(4,1)*xpol3.^3+Tabla(4,2)*xpol3.^2+Tabla(4,3)*xpol3+Tabla(4,4);
+ %p4=Tabla(5,1)*xpol4.^3+Tabla(5,2)*xpol4.^2+Tabla(5,3)*xpol4+Tabla(5,4);
+ %p5=Tabla(6,1)*xpol5.^3+Tabla(6,2)*xpol5.^2+Tabla(6,3)*xpol5+Tabla(6,4);
+ %p6=Tabla(7,1)*xpol6.^3+Tabla(7,2)*xpol6.^2+Tabla(7,3)*xpol6+Tabla(7,4);
+ %p7=Tabla(8,1)*xpol7.^3+Tabla(8,2)*xpol7.^2+Tabla(8,3)*xpol7+Tabla(8,4);
+ %p8=Tabla(8,1)*xpol8.^3+Tabla(8,2)*xpol8.^2+Tabla(8,3)*xpol8+Tabla(8,4);
+
+P9=Tabla(8,1)*1.544+Tabla(8,2);
+% Evaluate the polynomial at the new point (1.544)
+%p9 = Tabla(8, 1) * 1.544^3 + Tabla(8, 2) * 1.544^2 + Tabla(8, 3) * 1.544 + Tabla(8, 4);
+
+plot(x,y,'r*')
+hold on
+grid on
+plot(xpol0,p0,'b',xpol1,p1,'g',xpol2,p2,'m',xpol3,p3,'Y',xpol4,p4,'K',xpol5,p5,'r',xpol6,p6,'c',xpol7,p7,'p',xpol8,p8,'r')

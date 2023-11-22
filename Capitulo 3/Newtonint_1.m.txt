@@ -1,0 +1,46 @@
+function [Tabla, interpolante] = Newtonint_1(x, y)
+    n = length(x);
+    Tabla = zeros(n, n + 1);
+    Tabla(:, 1) = x;
+    Tabla(:, 2) = y;
+
+    for j = 3:n + 1
+        for i = j - 1:n
+            Tabla(i, j) = (Tabla(i, j - 1) - Tabla(i - 1, j - 1)) / (Tabla(i, 1) - Tabla(i - j + 2, 1));
+        end
+    end
+
+    interpolante = @(val) evalNewton(val, x, Tabla);
+
+    % Crear y mostrar la gráfica
+    figure;
+    scatter(x, y, 'o', 'DisplayName', 'Datos');
+    hold on;
+
+    % Graficar el polinomio interpolante
+    x_interp = linspace(min(x), max(x), 1000);
+    y_interp = arrayfun(interpolante, x_interp);
+    plot(x_interp, y_interp, 'r-', 'DisplayName', 'Polinomio Interpolante');
+
+    % Agregar el punto 1.544 a la gráfica
+    y_1_544 = arrayfun(interpolante, 1.544);
+    scatter(1.544, y_1_544, 'g', 'DisplayName', 'Punto 1.544');
+
+    title('Polinomio de Interpolación de Newton');
+    xlabel('x');
+    ylabel('y');
+    legend('show');
+    grid on;
+    hold off;
+end
+
+function y = evalNewton(val, x, Tabla)
+    n = length(x);
+    L = ones(size(val));
+    y = Tabla(1, 2);
+
+    for i = 2:n
+        L = L .* (val - x(i - 1));
+        y = y + Tabla(i, i + 1) * L;
+    end
+end

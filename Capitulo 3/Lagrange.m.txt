@@ -1,0 +1,32 @@
+function [pol] = Lagrange(x, y)
+    n = length(x);
+    Tabla = zeros(n, n);
+    
+    % Calculate Lagrange basis polynomials and construct the interpolating polynomial
+    for i = 1:n
+        Li = 1;
+        den = 1;
+        for j = 1:n
+            if j ~= i
+                paux = [1, -x(j)];
+                Li = conv(Li, paux);
+                den = den * (x(i) - x(j));
+            end
+        end
+        Tabla(i, :) = y(i) * Li / den;
+    end
+    
+    pol = sum(Tabla);
+    
+    % Plot the Lagrange interpolating polynomial
+    figure;
+    xx = linspace(min(x), max(x), 1000);
+    yy = polyval(pol, xx);
+    
+    plot(x, y, 'o', xx, yy, '-', 1.544, polyval(pol, 1.544), 'xr'); % Add the point at x=1.544
+    title('Lagrange Interpolating Polynomial');
+    xlabel('x');
+    ylabel('y');
+    legend('Data Points', 'Lagrange Polynomial', 'Point at x=1.544');
+    grid on;
+end
